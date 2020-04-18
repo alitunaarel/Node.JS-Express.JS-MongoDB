@@ -1,43 +1,32 @@
-const path = require("path");
 const express = require("express");
 const exphbs = require("express-handlebars");
 const app = express();
 const port = 3000;
 const hostname = "127.0.0.1";
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 
- mongoose.connect('mongodb://127.0.0.1/nodeblog_db', {
+mongoose.connect("mongodb://127.0.0.1/nodeblog_db", {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
-
 
 app.use(express.static("public"));
 
 app.engine("handlebars", exphbs());
 app.set("view engine", "handlebars");
 
-app.get("/", (req, res) => {
-  res.render("site/index");
-});
-app.get("/about", (req, res) => {
-  res.render("site/about");
-});
-app.get("/blog", (req, res) => {
-  res.render("site/blog");
-});
-app.get("/contact", (req, res) => {
-  res.render("site/contact");
-});
-app.get("/login", (req, res) => {
-  res.render("site/login");
-});
-app.get("/register", (req, res) => {
-  res.render("site/register");
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(bodyParser.json());
+
+const main = require("./routes/main");
+const posts = require("./routes/posts");
+app.use("/", main);
+app.use("/posts", posts);
+
+app.listen(port, hostname, () => {
+  console.log(` Example app listening, http://${hostname}:${port}/`);
 });
 
-app.listen(port, hostname, () =>{ 
-  console.log(` Example app listening, http://${hostname}:${port}/`)
-});
-
-
+// Node.JS - Express.JS - MongoDB 14: Routing Dosyası - Post Eklemek I
